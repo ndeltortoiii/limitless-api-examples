@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: Limitless Developer API
+  description: API for accessing your Limitless data.
+  version: 1.0.0
+servers:
+  - url: https://api.limitless.ai
+paths:
+  /v1/lifelogs:
+    get:
+      summary: Get lifelogs
+      description: Retrieve lifelogs with various filtering options
+      parameters:
+        - name: cursor
+          in: query
+          schema:
+            type: string
+          description: Pagination cursor
+        - name: date
+          in: query
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+          description: Filter by date in yyyy-mm-dd format
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort direction
+        - name: end
+          in: query
+          schema:
+            type: string
+          description: End date/time for filtering
+        - name: includeMarkdown
+          in: query
+          schema:
+            type: boolean
+            default: true
+          description: Whether to include markdown content
+        - name: includeHeadings
+          in: query
+          schema:
+            type: boolean
+            default: true
+          description: Whether to include headings
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          description: Maximum number of results to return
+        - name: start
+          in: query
+          schema:
+            type: string
+          description: Start date/time for filtering
+        - name: structure
+          in: query
+          schema:
+            type: string
+            enum: [tree, flat]
+          description: Structure format of the returned lifelogs
+        - name: timezone
+          in: query
+          schema:
+            type: string
+          description: Timezone for date calculations
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetLifelogsResponse"
+components:
+  schemas:
+    LifelogContentNode:
+      type: object
+      required:
+        - content
+        - type
+      properties:
+        content:
+          type: string
+        endOffsetMs:
+          type: integer
+        endTime:
+          type: string
+        speakerIdentifier:
+          type: string
+          enum: [user]
+        speakerName:
+          type: string
+        startOffsetMs:
+          type: integer
+        startTime:
+          type: string
+        type:
+          type: string
+
+    LifelogContentNodeWithChildren:
+      allOf:
+        - $ref: "#/components/schemas/LifelogContentNode"
+        - type: object
+          properties:
+            children:
+              type: array
+              items:
+                $ref: "#/components/schemas/LifelogContentNodeWithChildren"
+
+    Lifelog:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        flat:
+          type: array
+          items:
+            $ref: "#/components/schemas/LifelogContentNode"
+        id:
+          type: string
+        markdown:
+          type: string
+        title:
+          type: string
+        tree:
+          $ref: "#/components/schemas/LifelogContentNodeWithChildren"
+
+    GetLifelogsResponse:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: object
+          required:
+            - lifelogs
+          properties:
+            lifelogs:
+              type: array
+              items:
+                $ref: "#/components/schemas/Lifelog"
+        meta:
+          type: object
+          required:
+            - lifelogs
+          properties:
+            lifelogs:
+              type: object
+              required:
+                - count
+              properties:
+                count:
+                  type: integer
+                nextCursor:
+                  type: string
