@@ -1,7 +1,7 @@
 import requests
 import os
 
-def get_lifelogs(endpoint="v1/lifelogs", limit=50, batch_size=10, structure=None, includeMarkdown=True, includeHeadings=False):
+def get_lifelogs(endpoint="v1/lifelogs", limit=50, batch_size=10, includeMarkdown=True, includeHeadings=False, date=None, timezone=None):
     all_lifelogs = []
     cursor = None
     
@@ -15,7 +15,8 @@ def get_lifelogs(endpoint="v1/lifelogs", limit=50, batch_size=10, structure=None
             "limit": batch_size,
             "includeMarkdown": "true" if includeMarkdown else "false",
             "includeHeadings": "false" if includeHeadings else "true",
-            "structure": structure
+            "date": date,
+            "timezone": timezone
         }
         
         # Add cursor for pagination if we have one
