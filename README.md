@@ -22,7 +22,7 @@ This repository contains examples demonstrating how to use our API endpoints, fe
 To use these examples, you'll need:
 
 - [An API key](https://limitless.ai/developers)
-- Node.js 14.0 or higher
+- Python 3 and virtualenv (you can install virtualenv with `pipx install virtualenv`)
 - Basic understanding of REST APIs
 
 You can also use our [OpenAPI spec](openapi.yml) to generate client libraries in your language of choice.
@@ -49,30 +49,18 @@ pip install -r requirements.txt
 
 ## Examples
 
-### Generate a daily summary from your transcripts
+### Export Markdown
+
+This example simply prints the Markdown content from each the most recent record.
 
 ```bash
-python summarize_day.py
+python export_markdown.py
 ```
 
-##### Output (will stream to the console):
-
-```markdown
-Here's a summary of the provided transcripts:
-
-1. **Song Request and Lyrics Discussion**: A family member requests Siri to play "Shiny" from Moana. They discuss their favorite parts of the song, express confusion over the lyrics, and reflect on Grandma's advice to "listen to your heart."
-
-2. **Swimming Conversation**: You and another speaker recall whose child was first in the water, discuss a successful swim attempt, and consider whether to do another lap.
-
-... etc ...
-```
-
-### Print a tree structure of your transcripts
-
-This example uses the `structure="tree"` parameter to print a tree structure of your transcripts.
+Your timezone should be detected, but you can customize it by passing an optional `timezone` parameter
 
 ```bash
-python print_tree.py
+python export_markdown.py "America/New_York"
 ```
 
 ##### Output:
@@ -97,6 +85,24 @@ Discussing the desired part of the song.
     Speaker 3: Right, Mom.
 
 Confusion about the lyrics and a reference to Grandma's advice.
+
+... etc ...
+```
+
+### Generate a daily summary from your transcripts
+
+```bash
+python summarize_day.py
+```
+
+##### Output (will stream to the console):
+
+```markdown
+Here's a summary of the provided transcripts:
+
+1. **Song Request and Lyrics Discussion**: A family member requests Siri to play "Shiny" from Moana. They discuss their favorite parts of the song, express confusion over the lyrics, and reflect on Grandma's advice to "listen to your heart."
+
+2. **Swimming Conversation**: You and another speaker recall whose child was first in the water, discuss a successful swim attempt, and consider whether to do another lap.
 
 ... etc ...
 ```
