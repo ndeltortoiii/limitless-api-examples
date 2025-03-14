@@ -40,10 +40,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Setup
-
-You'll need to add your API keys at the top of each file.
-
 ## 🛳️ Examples
 
 ### Example cURL
@@ -64,13 +60,7 @@ See the `notebooks/` folder for examples.
 This example simply prints the Markdown content from each the most recent record.
 
 ```bash
-python export_markdown.py
-```
-
-Your timezone should be detected, but you can customize it by passing an optional `timezone` parameter
-
-```bash
-python export_markdown.py "America/New_York"
+LIMITLESS_API_KEY="your_api_key" python export_markdown.py
 ```
 
 ##### Output:
@@ -102,7 +92,7 @@ Confusion about the lyrics and a reference to Grandma's advice.
 ### Generate a daily summary from your transcripts
 
 ```bash
-python summarize_day.py
+LIMITLESS_API_KEY="your_api_key" OPENAI_API_KEY="sk-...." python summarize_day.py
 ```
 
 ##### Output (will stream to the console):

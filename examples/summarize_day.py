@@ -1,11 +1,9 @@
-LIMITLESS_API_KEY = "<your api key>"
-OPENAI_API_KEY = "<your openai api key>"
-
+import os
 from openai import OpenAI
 from _client import get_lifelogs
 
 def summarize_lifelogs(lifelogs, should_stream=True):
-  client = OpenAI(api_key=OPENAI_API_KEY)
+  client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     
   response = client.chat.completions.create(
       model="gpt-4o-mini",
@@ -25,7 +23,7 @@ def summarize_lifelogs(lifelogs, should_stream=True):
 def main():
     # Get transcripts, limiting size because OpenAI has a 128k context window
     lifelogs = get_lifelogs(
-        api_key=LIMITLESS_API_KEY,
+        api_key=os.getenv("LIMITLESS_API_KEY"),
         limit=10
     )
 

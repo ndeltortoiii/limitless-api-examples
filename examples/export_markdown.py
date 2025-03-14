@@ -1,5 +1,4 @@
-LIMITLESS_API_KEY = "<your api key>"
-
+import os
 from _client import get_lifelogs
 
 # Define a function to export the most recent lifelog
@@ -12,9 +11,9 @@ def export_data(lifelogs):
 def main():    
     # NOTE: Increase limit to get more lifelogs
     lifelogs = get_lifelogs(
-        api_key=LIMITLESS_API_KEY,
+        api_key=os.getenv("LIMITLESS_API_KEY"),
         limit=1,
-        direction="desc"
+        direction="desc",
     )
     
     # Export data
