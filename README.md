@@ -53,6 +53,10 @@ You need to copy `.env.example` to `.env.local`, and update the values with your
 
 ## Examples
 
+### Chart Usage
+
+See the `notebooks/` folder for examples.
+
 ### Export Markdown
 
 This example simply prints the Markdown content from each the most recent record.
@@ -111,7 +115,7 @@ Here's a summary of the provided transcripts:
 ... etc ...
 ```
 
-### More information
+## More information
 
 For more information on the API, see the [documentation](https://limitless.ai/developers/docs/api).
 
