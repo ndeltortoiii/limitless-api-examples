@@ -24,7 +24,7 @@ def get_lifelogs(endpoint="v1/lifelogs", limit=50, batch_size=10, includeMarkdow
             params["cursor"] = cursor
             
         response = requests.get(
-            f"{os.getenv('LIMITLESS_API_URL')}/{endpoint}",
+            f"{os.getenv('LIMITLESS_API_URL', 'https://api.limitless.ai')}/{endpoint}",
             headers={"X-API-Key": os.getenv('LIMITLESS_API_KEY')},
             params=params,
         )

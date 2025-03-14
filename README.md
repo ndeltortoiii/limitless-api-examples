@@ -42,10 +42,14 @@ curl -X GET "https://api.limitless.ai/v1/<endpoint>" \
 
 ```bash
 cd python
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
+#### Setup
+
+You need to copy `.env.example` to `.env.local`, and update the values with your appropriate keys.
 
 ## Examples
 
