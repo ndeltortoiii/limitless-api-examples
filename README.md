@@ -42,7 +42,7 @@ pip install -r requirements.txt
 
 ### Setup
 
-**You need to copy `.env.example` to `.env.local`,** and update the values with your appropriate keys.
+You'll need to add your API keys at the top of each file.
 
 ## 🛳️ Examples
 
