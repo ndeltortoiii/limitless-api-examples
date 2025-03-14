@@ -57,6 +57,8 @@ You need to copy `.env.example` to `.env.local`, and update the values with your
 
 See the `notebooks/` folder for examples.
 
+![Chart Example](./assets/chart.png)
+
 ### Export Markdown
 
 This example simply prints the Markdown content from each the most recent record.
