@@ -171,6 +171,3 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LifelogsResponse"
-      x-google-quota:
-        metricCosts:
-          "read-requests": 1
