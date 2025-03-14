@@ -1,7 +1,7 @@
 import requests
-import os
+import tzlocal
 
-def get_lifelogs(endpoint="v1/lifelogs", limit=50, batch_size=10, includeMarkdown=True, includeHeadings=False, date=None, timezone=None):
+def get_lifelogs(api_key, api_url="https://api.limitless.ai", endpoint="v1/lifelogs", limit=50, batch_size=10, includeMarkdown=True, includeHeadings=False, date=None, timezone=None, direction="asc"):
     all_lifelogs = []
     cursor = None
     
@@ -16,7 +16,8 @@ def get_lifelogs(endpoint="v1/lifelogs", limit=50, batch_size=10, includeMarkdow
             "includeMarkdown": "true" if includeMarkdown else "false",
             "includeHeadings": "false" if includeHeadings else "true",
             "date": date,
-            "timezone": timezone
+            "direction": direction,
+            "timezone": timezone if timezone else str(tzlocal.get_localzone())
         }
         
         # Add cursor for pagination if we have one
@@ -24,8 +25,8 @@ def get_lifelogs(endpoint="v1/lifelogs", limit=50, batch_size=10, includeMarkdow
             params["cursor"] = cursor
             
         response = requests.get(
-            f"{os.getenv('LIMITLESS_API_URL', 'https://api.limitless.ai')}/{endpoint}",
-            headers={"X-API-Key": os.getenv('LIMITLESS_API_KEY')},
+            f"{api_url}/{endpoint}",
+            headers={"X-API-Key": api_key},
             params=params,
         )
 

@@ -1,22 +1,33 @@
-import os
-from pathlib import Path
-import sys
-import os.path
+LIMITLESS_API_KEY = "<your api key>"
+OPENAI_API_KEY = "<your openai api key>"
 
-from lib.client import get_lifelogs
-from lib.llm import summarize_lifelogs
-from lib.env import load_env
+from openai import OpenAI
+from _client import get_lifelogs
 
-# Add the parent directory to the path so we can import constants
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# Import .env files
-root_dir = Path(__file__).resolve().parent.parent
-load_env(root_dir)
+def summarize_lifelogs(lifelogs, should_stream=True):
+  client = OpenAI(api_key=OPENAI_API_KEY)
+    
+  response = client.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=[
+          {"role": "system", "content": "You are a helpful assistant that summarizes transcripts."},
+          {"role": "user", "content": f"Summarize the following transcripts: {lifelogs}"}
+      ],
+      stream=should_stream
+  )
+  if should_stream:
+    for chunk in response:
+      if chunk.choices[0].finish_reason is None:
+        print(chunk.choices[0].delta.content, end='')
+  else:
+    return response.choices[0].message.content
 
 def main():
     # Get transcripts, limiting size because OpenAI has a 128k context window
-    lifelogs = get_lifelogs(limit=10)
+    lifelogs = get_lifelogs(
+        api_key=LIMITLESS_API_KEY,
+        limit=10
+    )
 
     # Summarize transcripts
     summarize_lifelogs(lifelogs)

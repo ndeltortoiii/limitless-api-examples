@@ -1,31 +1,21 @@
-import os
-from pathlib import Path
-import sys
-import os.path
+LIMITLESS_API_KEY = "<your api key>"
 
-from lib.client import get_lifelogs
-from lib.env import load_env
-from lib.tz import get_local_timezone
+from _client import get_lifelogs
 
-# Add the parent directory to the path so we can import constants
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# Import .env files
-root_dir = Path(__file__).resolve().parent.parent
-load_env(root_dir)
-
+# Define a function to export the most recent lifelog
+# Customize the export function to your needs!
 def export_data(lifelogs):
     for lifelog in lifelogs:
         print(lifelog.get("markdown"), end="\n\n")
 
-def main():
-    timezone = sys.argv[1] if len(sys.argv) > 1 else None
-    
-    if timezone is None:
-        timezone = get_local_timezone()
-    
+# Run the script
+def main():    
     # NOTE: Increase limit to get more lifelogs
-    lifelogs = get_lifelogs(timezone=timezone, limit=1)
+    lifelogs = get_lifelogs(
+        api_key=LIMITLESS_API_KEY,
+        limit=1,
+        direction="desc"
+    )
     
     # Export data
     export_data(lifelogs)
