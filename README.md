@@ -3,11 +3,13 @@
     Limitless Developer API: Code Examples
   </h1>
 
-## Overview
-
 This repository contains examples demonstrating how to use our API endpoints, featuring realistic, LLM-powered use cases.
 
-## Table of Contents
+## 😍 Contributing
+
+Share your examples with the community! Pull requests are welcome. We'll review PRs and potentially merge the best use cases (with credit, of course).
+
+## 📚 Table of Contents
 
 - [Getting Started](#getting-started)
 - [Authentication](#authentication)
@@ -15,28 +17,21 @@ This repository contains examples demonstrating how to use our API endpoints, fe
 - [Documentation](#documentation)
 - [Support](#support)
 
-## Getting Started
+## 🚀 Getting Started
 
 To use these examples, you'll need:
 
-- [An API key](https://limitless.ai/developers)
-- Python 3 and virtualenv (you can install virtualenv with `pipx install virtualenv`)
+- [An API key](https://limitless.ai/developers) from Limitless
+- [Python 3](https://realpython.com/installing-python/) and virtualenv (you can install virtualenv with `pipx install virtualenv`)
 - Basic understanding of REST APIs
 
 You can also use our [OpenAPI spec](openapi.yml) to generate client libraries in your language of choice.
 
-## Authentication
+## 🔐 Authentication
 
 All API requests require authentication using an API key. Include it in the header of your requests:
 
-#### Example cURL
-
-```bash
-curl -X GET "https://api.limitless.ai/v1/<endpoint>" \
-     -H "X-API-KEY: YOUR_API_KEY"
-```
-
-#### Installation
+### Installation
 
 ```bash
 cd python
@@ -45,15 +40,22 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-#### Setup
+### Setup
 
-You need to copy `.env.example` to `.env.local`, and update the values with your appropriate keys.
+**You need to copy `.env.example` to `.env.local`,** and update the values with your appropriate keys.
 
-## Examples
+## 🛳️ Examples
+
+### Example cURL
+
+```bash
+curl -X GET "https://api.limitless.ai/v1/<endpoint>" \
+     -H "X-API-KEY: YOUR_API_KEY"
+```
 
 ### Chart Usage
 
-See the `notebooks/` folder for examples.
+See the `examples/notebooks/` folder for examples.
 
 ![Chart Example](./assets/chart.png)
 
@@ -115,10 +117,10 @@ Here's a summary of the provided transcripts:
 ... etc ...
 ```
 
-## More information
+## ℹ️ More information
 
 For more information on the API, see the [documentation](https://limitless.ai/developers/docs/api).
 
-## Support
+## 🛟 Support
 
 If you need help, join our [Slack community](https://www.limitless.ai/community), follow us on [X/Twitter](https://twitter.com/limitlessai), or [email us](mailto:support@limitless.ai).
