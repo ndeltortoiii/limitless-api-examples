@@ -1,15 +1,13 @@
   <h1>
     <img src="assets/limitless-logo.svg" alt="API Icon" width="32" height="32">
-    Limitless Developer API
+    Limitless Developer API: Code Examples
   </h1>
 
-## Usage Examples
-
-### Overview
+## Overview
 
 This repository contains examples demonstrating how to use our API endpoints, featuring realistic, LLM-powered use cases.
 
-### Table of Contents
+## Table of Contents
 
 - [Getting Started](#getting-started)
 - [Authentication](#authentication)
