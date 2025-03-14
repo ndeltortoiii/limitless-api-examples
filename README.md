@@ -55,7 +55,7 @@ curl -X GET "https://api.limitless.ai/v1/<endpoint>" \
 
 ### Chart Usage
 
-See the `examples/notebooks/` folder for examples.
+See the `notebooks/` folder for examples.
 
 ![Chart Example](./assets/chart.png)
 
