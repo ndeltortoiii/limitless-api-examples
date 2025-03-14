@@ -34,7 +34,7 @@ All API requests require authentication using an API key. Include it in the head
 ### Installation
 
 ```bash
-cd python
+cd examples
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
