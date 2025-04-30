@@ -57,17 +57,24 @@ async function addSubTask(content: string): Promise<void> {
 
 // Function to extract task from a sentence
 function extractTask(sentence: string): string | null {
+  // Match "add" followed by any words until "to my to-do list"
   const match = sentence.match(/add\s+(.+?)\s+to\s+my\s+to-do\s+list/i);
   if (match && match[1]) {
-    // Capitalize the first letter of each word
-    return match[1]
-      .trim()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    const words = match[1].trim().split(/\s+/);
+    // Capitalize only the first word, lowercase the rest
+    return words
+      .map((word, index) =>
+        index === 0
+          ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          : word.toLowerCase()
+      )
       .join(" ");
   }
   return null;
 }
+
+// Keep track of processed lines for each entry
+const processedLines = new Map<string, Set<string>>();
 
 // Function to process lifelog entries and extract to-do items
 async function processLifelogs(lifelogs: any[]): Promise<void> {
@@ -80,25 +87,6 @@ async function processLifelogs(lifelogs: any[]): Promise<void> {
   const existingTasksMap = new Map(
     existingSubTasks.map((task) => [task.content.toLowerCase().trim(), task])
   );
-
-  console.log(`\n📋 Current sub-tasks in Todoist:`);
-  console.log("=".repeat(80));
-  console.log("Raw task list:");
-  existingSubTasks.forEach((task, index) => {
-    console.log(`\nTask ${index + 1}:`);
-    console.log(`  Raw content: "${task.content}"`);
-    console.log(`  Normalized: "${task.content.toLowerCase().trim()}"`);
-    console.log(`  Completed: ${task.isCompleted}`);
-    console.log(`  ID: ${task.id}`);
-  });
-  console.log("=".repeat(80));
-  console.log("\nTask lookup map keys:");
-  console.log(
-    Array.from(existingTasksMap.keys())
-      .map((key) => `  - "${key}"`)
-      .join("\n")
-  );
-  console.log("=".repeat(80));
 
   let foundMatches = 0;
   let addedTasks = 0;
@@ -123,6 +111,11 @@ async function processLifelogs(lifelogs: any[]): Promise<void> {
       // Extract sentences
       const sentences = content.split(/[.!?]+/);
       for (const sentence of sentences) {
+        // Skip if we've already processed this exact line
+        if (processedLines.get(lifelog.id)?.has(sentence.trim())) {
+          continue;
+        }
+
         const taskContent = extractTask(sentence);
 
         if (taskContent) {
@@ -140,27 +133,47 @@ async function processLifelogs(lifelogs: any[]): Promise<void> {
             );
             console.log(`   Completed: ${existingTask.isCompleted}`);
             console.log(`   ID: ${existingTask.id}`);
+
+            if (existingTask.isCompleted) {
+              console.log(
+                `✨ Found completed task, adding as new task: "${taskContent}"`
+              );
+              await addSubTask(taskContent);
+              addedTasks++;
+            } else {
+              console.log(
+                `ℹ️ Task already exists and is not completed, skipping: "${taskContent}"`
+              );
+              skippedTasks++;
+            }
           } else {
-            console.log(`➕ Added new task: "${taskContent}"`);
+            console.log(`✨ This is a new task, adding to Todoist...`);
             await addSubTask(taskContent);
             addedTasks++;
+            // Add to our map to prevent duplicates within the same run
+            existingTasksMap.set(normalizedTaskContent, {
+              content: taskContent,
+              isCompleted: false,
+            } as Task);
           }
+
+          // Mark this line as processed
+          if (!processedLines.has(lifelog.id)) {
+            processedLines.set(lifelog.id, new Set());
+          }
+          processedLines.get(lifelog.id)!.add(sentence.trim());
         }
       }
-    } else {
-      console.log(`📄 Entry ${index + 1}/${lifelogs.length}:`);
       console.log("-".repeat(40));
-      skippedTasks++;
     }
   }
 
-  console.log("\n📋 Summary:");
-  console.log("=".repeat(80));
-  console.log(`🔍 Found ${foundMatches} matches`);
-  console.log(`➕ Added ${addedTasks} new tasks`);
-  console.log(`📄 Skipped ${skippedTasks} entries without tasks`);
-  console.log(`🗑️ Removed ${emptyTasks} empty entries`);
-  console.log("=".repeat(80));
+  console.log(`\n📊 Summary:`);
+  console.log(`- Processed ${lifelogs.length} lifelog entries`);
+  console.log(`- Found ${foundMatches} entries containing task additions`);
+  console.log(`- Added ${addedTasks} new tasks to Todoist`);
+  console.log(`- Skipped ${skippedTasks} duplicate tasks (not completed)`);
+  console.log(`- Found ${emptyTasks} unparseable task additions`);
 }
 
 // Main function
@@ -175,19 +188,23 @@ async function main(): Promise<void> {
   }
 
   try {
-    console.log("\n📥 Fetching recent lifelog entries...");
-    // Get the most recent lifelogs
-    const lifelogs = await getLifelogs({
-      apiKey: process.env.LIMITLESS_API_KEY || "",
-      limit: 10, // Adjust this number based on how many recent entries you want to check
-      direction: "desc",
-    });
-    console.log(`✅ Retrieved ${lifelogs.length} lifelog entries`);
+    while (true) {
+      console.log("\n📥 Checking for new lifelog entries...");
+      // Get the most recent lifelogs
+      const lifelogs = await getLifelogs({
+        apiKey: process.env.LIMITLESS_API_KEY || "",
+        limit: 10, // Adjust this number based on how many recent entries you want to check
+        direction: "desc",
+      });
 
-    // Process the lifelogs
-    await processLifelogs(lifelogs);
+      if (lifelogs.length > 0) {
+        // Process all entries every time, our processLifelogs function will handle duplicates
+        await processLifelogs(lifelogs);
+      }
 
-    console.log("\n✨ Monitor completed successfully!");
+      // Wait 3 seconds before checking again
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+    }
   } catch (error) {
     console.error("❌ Error:", error);
     process.exit(1);
