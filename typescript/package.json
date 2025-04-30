@@ -7,11 +7,13 @@
     "build": "tsc",
     "start": "ts-node",
     "export-markdown": "ts-node export_markdown.ts",
-    "summarize-day": "ts-node summarize_day.ts"
+    "summarize-day": "ts-node summarize_day.ts",
+    "monitor-todos": "ts-node monitor_todos.ts"
   },
   "dependencies": {
-    "axios": "^1.6.7",
-    "dotenv": "^16.4.5",
+    "@doist/todoist-api-typescript": "^4.0.3",
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
     "moment-timezone": "^0.5.45",
     "openai": "^4.28.0"
   },
