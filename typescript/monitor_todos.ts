@@ -62,13 +62,15 @@ function extractTask(sentence: string): string | null {
   if (match && match[1]) {
     const words = match[1].trim().split(/\s+/);
     // Capitalize only the first word, lowercase the rest
-    return words
+    const task = words
       .map((word, index) =>
         index === 0
           ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
           : word.toLowerCase()
       )
       .join(" ");
+    // Remove trailing punctuation
+    return task.replace(/[.,!?;:]$/, "");
   }
   return null;
 }
@@ -187,6 +189,8 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
+  let isFirstRun = true;
+
   try {
     while (true) {
       console.log("\n📥 Checking for new lifelog entries...");
@@ -198,8 +202,24 @@ async function main(): Promise<void> {
       });
 
       if (lifelogs.length > 0) {
-        // Process all entries every time, our processLifelogs function will handle duplicates
-        await processLifelogs(lifelogs);
+        if (isFirstRun) {
+          console.log(
+            "📌 First run - establishing baseline, skipping processing"
+          );
+          // Mark all current lines as processed without actually processing them
+          for (const lifelog of lifelogs) {
+            const content = lifelog.markdown || "";
+            const sentences = content.split(/[.!?]+/);
+            processedLines.set(
+              lifelog.id,
+              new Set(sentences.map((s) => s.trim()))
+            );
+          }
+          isFirstRun = false;
+        } else {
+          // Process all entries every time, our processLifelogs function will handle duplicates
+          await processLifelogs(lifelogs);
+        }
       }
 
       // Wait 3 seconds before checking again
